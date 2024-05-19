@@ -1,5 +1,3 @@
-import './linearCongruential'
-console.log(LinearCongruential())
 const maxRadius = 200;
 const maxClusters = 20;
 const minClusterSize = 50;
@@ -12,6 +10,7 @@ const predefinedColors = [
   "lavender",
   "teal",
 ];
+console.log(LinearCongruential);
 const settings = {
   seed: 91651088029,
   fps: 0,
@@ -169,13 +168,14 @@ const setupGUI = () => {
 // Seedable 'decent' random generator
 var local_seed = settings.seed;
 function mulberry32() {
-
   let t = (local_seed += 0x6d2b79f5);
   t = Math.imul(t ^ (t >>> 15), t | 1);
   t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 }
 
+console.log(mulberry32());
+console.log(LinearCongruential)
 function loadSeedFromUrl() {
   let hash = window.location.hash;
   if (hash != undefined && hash[0] == "#") {
@@ -563,4 +563,16 @@ function updateParams() {
 
   if (pulse != 0) pulse -= pulse > 0 ? 1 : -1;
   if (settings.explore) exploreParameters();
+}
+
+function LinearCongruential() {
+  let a = 48271;
+  let g = 31;
+  let m = parseInt((Math.pow(2,g)) - 1);
+  let c = 0;
+  let xi = Date.now() * 10000 + 621355968000000000;
+
+  xi = ((a * xi) + c) % m;
+  let ri = xi / (m - 1)
+  return ri;
 }
