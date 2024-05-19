@@ -1,3 +1,5 @@
+import './linearCongruential'
+console.log(LinearCongruential())
 const maxRadius = 200;
 const maxClusters = 20;
 const minClusterSize = 50;
@@ -153,6 +155,7 @@ const setupGUI = () => {
 // Seedable 'decent' random generator
 var local_seed = settings.seed;
 function mulberry32() {
+
   let t = (local_seed += 0x6d2b79f5);
   t = Math.imul(t ^ (t >>> 15), t | 1);
   t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
