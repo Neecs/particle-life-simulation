@@ -148,6 +148,20 @@ const setupGUI = () => {
     .name("Wall Repel")
     .listen();
   configFolder.add(settings, "explore").name("Random Exploration").listen();
+
+  for (const atomColor of settings.colors) {
+    const colorFolder =
+        settings.gui.addFolder(`Rules: <font color=\'${atomColor}\'>${atomColor.capitalise()}</font>`)
+    for (const ruleColor of settings.colors) {
+        colorFolder.add(settings.rules[atomColor], ruleColor, -1, 1, 0.001)
+             .name(`<-> <font color=\'${ruleColor}\'>${ruleColor.capitalise()}</font>`)
+             .listen().onFinishChange(v => { flattenRules() }
+        )
+    }
+    colorFolder.add(settings.radii, atomColor, 1, maxRadius, 5).name('Radius')
+        .listen().onFinishChange(v => { flattenRules() }
+    )
+}
 };
 
 // Seedable 'decent' random generator
