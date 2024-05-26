@@ -167,15 +167,24 @@ const setupGUI = () => {
 
 // Seedable 'decent' random generator
 var local_seed = settings.seed;
-function mulberry32() {
-  let t = (local_seed += 0x6d2b79f5);
-  t = Math.imul(t ^ (t >>> 15), t | 1);
-  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+function multiplicativeCongruence() {
+  const g = 31;
+    const a = 48271;
+    const m = Math.pow(2, g) - 1;
+    let local_seed = Date.now() % m; 
+  
+   
+    return function() {
+      local_seed = (a * local_seed) % m;
+      return local_seed / m;
+    };
+
+    
 }
 
-console.log(mulberry32());
-console.log(LinearCongruential)
+const randomGenerator = multiplicativeCongruence();
+
+console.log(randomGenerator());
 function loadSeedFromUrl() {
   let hash = window.location.hash;
   if (hash != undefined && hash[0] == "#") {
@@ -196,7 +205,7 @@ function randomRules() {
   for (const i of settings.colors) {
     settings.rules[i] = {};
     for (const j of settings.colors) {
-      settings.rules[i][j] = mulberry32() * 2 - 1;
+      settings.rules[i][j] = randomGenerator() * 2 - 1;
     }
     settings.radii[i] = 80;
   }
@@ -235,11 +244,11 @@ function updateCanvasDimensions() {
 
 // Initiate Random locations for Atoms ( used when atoms created )
 function randomX() {
-  return mulberry32() * (canvas.width - 100) + 50;
+  return randomGenerator() * (canvas.width - 100) + 50;
 }
 
 function randomY() {
-  return mulberry32() * (canvas.height - 100) + 50;
+  return randomGenerator() * (canvas.height - 100) + 50;
 }
 
 const create = (number, color) => {
@@ -407,17 +416,17 @@ var pulse_x = 0,
 var exploration_timer = 0;
 function exploreParameters() {
   if (exploration_timer <= 0) {
-    let c1 = settings.colors[Math.floor(mulberry32() * settings.numColors)];
-    if (mulberry32() >= 0.2) {
+    let c1 = settings.colors[Math.floor(randomGenerator() * settings.numColors)];
+    if (randomGeneratore() >= 0.2) {
       // 80% of the time, we change the strength
-      let c2 = settings.colors[Math.floor(mulberry32() * settings.numColors)];
-      let new_strength = mulberry32();
+      let c2 = settings.colors[Math.floor(randomGenerator() * settings.numColors)];
+      let new_strength = randomGenerator();
       // for better results, we force opposite-signed values
       if (settings.rules[c1][c2] > 0) new_strength = -new_strength;
       settings.rules[c1][c2] = new_strength;
     } else {
       // ...otherwise, the radius
-      settings.radii[c1] = 1 + Math.floor(mulberry32() * maxRadius);
+      settings.radii[c1] = 1 + Math.floor(randomGenerator() * maxRadius);
     }
     flattenRules();
     exploration_timer = settings.explorePeriod;
